@@ -6,7 +6,7 @@ function ChangePassword($password) {
 
 function SleepIfBeforeClone() {
   if (!(Get-ItemProperty 'HKLM:\SOFTWARE\Appveyor\Build Agent\State' -Name GetSources -ErrorAction Ignore).GetSources -eq "true") {
-  sleep 30
+  sleep 3
   }   
 }
 
@@ -47,7 +47,7 @@ $ip = (New-Object Net.WebClient).DownloadString('https://www.appveyor.com/tools/
 # allow RDP on firewall
 Enable-NetFirewallRule -DisplayName 'Remote Desktop - User Mode (TCP-in)'
 
-Write-Host "Remote Desktop connection details:" -ForegroundColor Yellow
+Write-Host "FOOOO Remote Desktop connection details:" -ForegroundColor Yellow
 Write-Host "  Server: $ip`:$port" -ForegroundColor Gray
 Write-Host "  Username: appveyor" -ForegroundColor Gray
 if(-not $env:appveyor_rdp_password) {
