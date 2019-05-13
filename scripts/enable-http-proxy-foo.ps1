@@ -21,27 +21,6 @@ if(-not $proxy_ip) {
     return
 }
 
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable /t REG_DWORD /d 1 /f | out-null
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyServer /t REG_SZ /d "$proxy_ip`:$proxy_port" /f | out-null
-
-# notifying wininet
-$source=@"
-
-[DllImport("wininet.dll")]
-
-public static extern bool InternetSetOption(int hInternet, int dwOption, int lpBuffer, int dwBufferLength);  
-
-"@
-
-#Create type from source
-$wininet = Add-Type -memberDefinition $source -passthru -name InternetSettings
-
-#INTERNET_OPTION_PROXY_SETTINGS_CHANGED
-$wininet::InternetSetOption([IntPtr]::Zero, 95, [IntPtr]::Zero, 0)|out-null
-
-#INTERNET_OPTION_REFRESH
-$wininet::InternetSetOption([IntPtr]::Zero, 37, [IntPtr]::Zero, 0)|out-null
-
 # save proxy details in environment variables
 $env:APPVEYOR_HTTP_PROXY_IP = $proxy_ip
 $env:APPVEYOR_HTTP_PROXY_PORT = $proxy_port
